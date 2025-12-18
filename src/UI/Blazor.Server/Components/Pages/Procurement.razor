@@ -1,0 +1,68 @@
+@page "/procurement"
+@inject IHttpClientFactory ClientFactory
+
+<h1>Procurement intake</h1>
+<p>Submit a procurement request. The API persists the aggregate, starts a workflow, and publishes <code>ProcurementCreatedIntegrationEvent</code> via MassTransit outbox.</p>
+
+<EditForm Model="this" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label">Inquiry Type</label>
+        <InputText @bind-Value="inquiryType" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Amount</label>
+        <InputNumber @bind-Value="amount" class="form-control" />
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</EditForm>
+
+@if (!string.IsNullOrWhiteSpace(error))
+{
+    <div class="alert alert-danger mt-3">@error</div>
+}
+else if (lastRequest is not null)
+{
+    <div class="alert alert-success mt-3">
+        <p><strong>Request Id:</strong> @lastRequest.Id</p>
+        <p><strong>Inquiry:</strong> @lastRequest.InquiryType</p>
+        <p><strong>Amount:</strong> @lastRequest.Amount</p>
+        <p><strong>Workflow:</strong> @lastRequest.WorkflowInstanceId</p>
+    </div>
+}
+
+<div class="mt-3 text-muted">Status: @status</div>
+
+@code {
+    private string inquiryType = "IT Equipment";
+    private decimal amount = 5_000;
+    private string status = "Ready";
+    private string? error;
+    private ProcurementRequestDto? lastRequest;
+
+    private async Task SubmitAsync()
+    {
+        error = null;
+        status = "Submitting";
+        try
+        {
+            var client = ClientFactory.CreateClient("Gateway");
+            var response = await client.PostAsJsonAsync("api/procurement/requests", new { InquiryType = inquiryType, Amount = amount });
+            if (!response.IsSuccessStatusCode)
+            {
+                error = $"API responded with status {(int)response.StatusCode}";
+                status = "Failed";
+                return;
+            }
+
+            lastRequest = await response.Content.ReadFromJsonAsync<ProcurementRequestDto>();
+            status = "Created";
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            status = "Failed";
+        }
+    }
+}
