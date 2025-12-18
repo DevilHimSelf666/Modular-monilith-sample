@@ -1,4 +1,4 @@
-# Mellat Bank Comprehensive Support System (Modular Monolith)
+# Modular Monolith Sample
 
 A .NET 9 modular monolith orchestrated with .NET Aspire. Procurement and Inventory bounded contexts are isolated by contracts, databases, and messaging (MassTransit + RabbitMQ with outbox/inbox patterns). Blazor Server provides a lightweight UI and Elsa workflow registration.
 
