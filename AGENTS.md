@@ -1,4 +1,4 @@
-# Codex Agent Instructions — Mellat Bank Comprehensive Support System (Modular Monolith)
+# Codex Agent Instructions — Modular Monolith Sample
 
 ## Role
 You are a senior .NET Solutions Architect. Optimize for correctness, Clean Architecture, and enterprise DDD patterns.
