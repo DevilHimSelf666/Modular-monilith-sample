@@ -1,0 +1,55 @@
+@page "/inventory"
+@inject IHttpClientFactory ClientFactory
+
+<h1>Inventory reservations</h1>
+<p>Reservations are created by the Inventory consumer when <code>ProcurementCreatedIntegrationEvent</code> arrives via RabbitMQ. Inbox deduplication keeps processing idempotent.</p>
+
+<button class="btn btn-secondary mb-3" @onclick="LoadAsync">Refresh</button>
+
+@if (reservations is null)
+{
+    <p>Loading...</p>
+}
+else if (!reservations.Any())
+{
+    <div class="alert alert-info">No reservations have been recorded yet.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Procurement</th>
+                <th>Inquiry</th>
+                <th>Amount</th>
+                <th>Recorded</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservation in reservations)
+            {
+                <tr>
+                    <td>@reservation.ProcurementRequestId</td>
+                    <td>@reservation.InquiryType</td>
+                    <td>@reservation.Amount.ToString("C")</td>
+                    <td>@reservation.CreatedAtUtc.ToLocalTime()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<ReservationDto>? reservations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        var client = ClientFactory.CreateClient("Gateway");
+        reservations = await client.GetFromJsonAsync<List<ReservationDto>>("api/inventory/reservations") ?? new List<ReservationDto>();
+    }
+}

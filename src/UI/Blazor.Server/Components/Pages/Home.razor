@@ -1,0 +1,13 @@
+@page "/"
+@inject NavigationManager Navigation
+
+<h1>Mellat Bank Support System</h1>
+<p class="lead">Modular monolith orchestrated via .NET Aspire with Procurement and Inventory bounded contexts.</p>
+
+<ul>
+    <li>Use the <NavLink href="/procurement">Procurement</NavLink> page to create requests (MassTransit outbox publishes integration events).</li>
+    <li>Use the <NavLink href="/inventory">Inventory</NavLink> page to view deduplicated reservations (Inbox).</li>
+    <li>Elsa workflows are available from the <NavLink href="/elsa">Elsa</NavLink> link.</li>
+</ul>
+
+<p>Gateway base: <code>@Navigation.BaseUri</code></p>

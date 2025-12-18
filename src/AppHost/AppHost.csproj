@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting" />
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Gateway/Gateway.csproj" />
+    <ProjectReference Include="../ServiceDefaults/ServiceDefaults.csproj" />
+    <ProjectReference Include="../UI/Blazor.Server/Blazor.Server.csproj" />
+    <ProjectReference Include="../Modules/Procurement/Procurement.Api/Procurement.Api.csproj" />
+    <ProjectReference Include="../Modules/Inventory/Inventory.Api/Inventory.Api.csproj" />
+  </ItemGroup>
+</Project>
